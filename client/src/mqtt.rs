@@ -42,13 +42,14 @@ impl Clone for MosquittoArc {
 }
 
 impl MosquittoArc {
-    pub fn new(host: impl Into<String>, port: u16, user: impl Into<String>) -> MosquittoArc {
+    pub fn new(host: impl Into<String>, port: u16, user: impl Into<String>, id: impl Into<String>) -> MosquittoArc {
         let (sender, receiver): (Sender<Mosquitto>, Receiver<Mosquitto>) = mpsc::channel();
         let host = host.into();
         let user = user.into();
+        let id = id.into();
         let handle = Handle::current();
         thread::spawn(move || {
-            let (mqtt, future) = Mosquitto::new(host, port, handle, user);
+            let (mqtt, future) = Mosquitto::new(host, port, handle, user, id);
             sender.send(mqtt);
             block_on(future)
         });
@@ -83,10 +84,10 @@ impl MosquittoArc {
 
 impl Mosquitto {
     pub fn new(
-        host: impl Into<String>, port: u16, tokio_handle: Handle, user: impl Into<String>
+        host: impl Into<String>, port: u16, tokio_handle: Handle, user: impl Into<String>, id: impl Into<String>
     ) -> (Mosquitto, Join3<JoinHandle<()>, impl Future<Output=()>, JoinHandle<()>>) {
         let user = user.into();
-        let mut mqttoptions = MqttOptions::new(format!("{}-client", &user), host.into(), port);
+        let mut mqttoptions = MqttOptions::new(id.into(), host.into(), port);
         mqttoptions.set_credentials(user, String::from(""));
         mqttoptions.set_keep_alive(5);
 

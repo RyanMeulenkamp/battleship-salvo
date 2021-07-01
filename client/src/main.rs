@@ -28,7 +28,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let prefix = grab_string();
     println!("{} playing on channel {}", player, prefix);
 
-    let mut mqtt = MosquittoArc::new("nvs0495", 1883, &prefix);
+    let mut mqtt = MosquittoArc::new("nvs0495", 1883, &prefix, &player);
 
     mqtt.subscribe(
         format!("/{}/players/{}/ships/+/error", &prefix, &player),
