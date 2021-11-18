@@ -61,8 +61,8 @@ Description
   * Player provides a number of shots to fire on topic `/players/<target_player_name>/fire`, in the form of `{ "data": {"x": <x>, "y": <y>}, "signature": "<signature>"}`
   * After each shot, the target player receives the coordinates on `/players/<target_player_name>/hit`. Format `{ "x": <x>, "y": <y> }`.
   * After the maximum shots of the current player is received, the server will publish the total number of actual hits at `/game/hits`.
-  * If a ship sinks, boolean `true` is published on `/player/<player_name>/ships/<ship>/sunk`
-  * If a player was defeated, boolean `true` is published at `/player/<player_name>/defeated`
+  * If a ship sinks, boolean `true` is retained on `/player/<player_name>/ships/<ship>/sunk`
+  * If a player was defeated, boolean `true` is retained at `/player/<player_name>/defeated`
   * If all but one player were defeated, the game is over. `/game/state` goes to `over`.
 * `over` state
   * Winner is published at `/game/winner`.

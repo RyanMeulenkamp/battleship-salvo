@@ -113,19 +113,14 @@ impl Mosquitto {
             join3(
                 tokio_handle.spawn(async move {
                     while *running_for_eventloop.lock().unwrap() {
-                        let event = eventloop.poll().await;
-                        match event {
-                            Ok(event) => match event {
-                                Event::Incoming(incoming) => match incoming {
-                                    Packet::Publish(publish) => match String::from_utf8(publish.payload.to_vec()) {
-                                        Ok(payload) => event_sender.send((publish.topic.clone(), payload.clone())).unwrap(),
-                                        _ => {}
+                        if let Ok(event) = eventloop.poll().await {
+                            if let Event::Incoming(incoming) = event {
+                                if let Packet::Publish(publish) = incoming {
+                                    if let Ok(payload) = String::from_utf8(publish.payload.to_vec()) {
+                                        event_sender.send((publish.topic.clone(), payload.clone())).unwrap()
                                     }
-                                    _ => {}
                                 }
-                                _ => {}
                             }
-                            _ => {}
                         }
                     }
                 }),

@@ -27,7 +27,7 @@ pub fn grab_coordinate(axis: &str) -> u8 {
     }
 }
 
-pub fn grap_coordinates() -> (u8, u8) {
+pub fn grab_coordinates() -> (u8, u8) {
     (grab_coordinate("x"), grab_coordinate("y"))
 }
 
